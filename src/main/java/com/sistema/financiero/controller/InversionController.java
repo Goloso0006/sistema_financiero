@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
+import com.sistema.financiero.enums.TipoInversion;
 
 @RestController
 @RequestMapping("/api/inversiones")
@@ -44,7 +45,7 @@ public class InversionController {
     }
 
     @GetMapping("/tipo/{tipoInversion}")
-    public ResponseEntity<List<MovimientoResponse>> obtenerInversionesPorTipo(@PathVariable String tipoInversion) {
+    public ResponseEntity<List<MovimientoResponse>> obtenerInversionesPorTipo(@PathVariable TipoInversion tipoInversion) {
         return ResponseEntity.ok(inversionService.obtenerInversionesPorTipo(tipoInversion));
     }
 

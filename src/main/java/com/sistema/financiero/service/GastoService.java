@@ -9,7 +9,7 @@ public interface GastoService {
     MovimientoResponse crearGasto(GastoRequest request);
     MovimientoResponse obtenerGasto(String id);
     List<MovimientoResponse> obtenerGastosPorCuenta(String cuentaId);
-    List<MovimientoResponse> obtenerGastosPorTipo(String tipoGasto);
+    List<MovimientoResponse> obtenerGastosPorTipo(com.sistema.financiero.enums.CategoriaGasto tipoGasto);
     List<MovimientoResponse> obtenerGastosFijos();
     List<MovimientoResponse> obtenerTodos();
     MovimientoResponse actualizarGasto(String id, GastoRequest request);

@@ -59,7 +59,7 @@ public class InversionServiceImpl implements InversionService {
     }
 
     @Override
-    public List<MovimientoResponse> obtenerInversionesPorTipo(String tipoInversion) {
+    public List<MovimientoResponse> obtenerInversionesPorTipo(com.sistema.financiero.enums.TipoInversion tipoInversion) {
         return inversionRepository.findByTipoInversion(tipoInversion).stream()
                 .map(this::mapearAResponse)
                 .collect(Collectors.toList());

@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
+import com.sistema.financiero.enums.TipoInversion;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +26,8 @@ public class InversionRequest {
     @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
     
-    @NotBlank(message = "El tipo de inversión no puede estar vacío")
-    private String tipoInversion;
+    @NotNull(message = "El tipo de inversión no puede ser nulo")
+    private TipoInversion tipoInversion;
     
     private double rentabilidadEsperada;
     private LocalDate fecha;

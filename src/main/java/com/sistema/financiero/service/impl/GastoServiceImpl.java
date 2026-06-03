@@ -51,7 +51,7 @@ public class GastoServiceImpl implements GastoService {
     }
 
     @Override
-    public List<MovimientoResponse> obtenerGastosPorTipo(String tipoGasto) {
+    public List<MovimientoResponse> obtenerGastosPorTipo(com.sistema.financiero.enums.CategoriaGasto tipoGasto) {
         return gastoRepository.findByTipoGasto(tipoGasto).stream()
                 .map(this::mapearAResponse)
                 .collect(Collectors.toList());

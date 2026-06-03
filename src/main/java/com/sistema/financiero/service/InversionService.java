@@ -10,7 +10,7 @@ public interface InversionService {
     MovimientoResponse obtenerInversion(String id);
     List<MovimientoResponse> obtenerInversionesPorCuenta(String cuentaId);
     List<MovimientoResponse> obtenerInversionesActivas();
-    List<MovimientoResponse> obtenerInversionesPorTipo(String tipoInversion);
+    List<MovimientoResponse> obtenerInversionesPorTipo(com.sistema.financiero.enums.TipoInversion tipoInversion);
     List<MovimientoResponse> obtenerTodas();
     MovimientoResponse actualizarInversion(String id, InversionRequest request);
     void eliminarInversion(String id);

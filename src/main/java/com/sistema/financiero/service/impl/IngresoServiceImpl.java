@@ -49,7 +49,7 @@ public class IngresoServiceImpl implements IngresoService {
     }
 
     @Override
-    public List<MovimientoResponse> obtenerIngresosPorFrecuencia(String frecuencia) {
+    public List<MovimientoResponse> obtenerIngresosPorFrecuencia(com.sistema.financiero.enums.FrecuenciaIngreso frecuencia) {
         return ingresoRepository.findByFrecuencia(frecuencia).stream()
                 .map(this::mapearAResponse)
                 .collect(Collectors.toList());

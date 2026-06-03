@@ -10,6 +10,6 @@ import java.util.List;
 public interface InversionRepository extends MongoRepository<Inversion, String> {
     List<Inversion> findByCuentaId(String cuentaId);
     List<Inversion> findByEstaActiva(boolean estaActiva);
-    List<Inversion> findByTipoInversion(String tipoInversion);
+    List<Inversion> findByTipoInversion(com.sistema.financiero.enums.TipoInversion tipoInversion);
 }
 

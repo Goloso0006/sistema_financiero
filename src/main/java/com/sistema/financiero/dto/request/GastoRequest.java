@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
+import com.sistema.financiero.enums.CategoriaGasto;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +26,8 @@ public class GastoRequest {
     @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
     
-    @NotBlank(message = "La categoría no puede estar vacía")
-    private String tipoGasto;
+    @NotNull(message = "La categoría no puede ser nula")
+    private CategoriaGasto tipoGasto;
     
     private boolean esFijo;
     private boolean recordatorio;

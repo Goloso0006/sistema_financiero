@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
+import com.sistema.financiero.enums.FrecuenciaIngreso;
 
 @RestController
 @RequestMapping("/api/ingresos")
@@ -39,7 +40,7 @@ public class IngresoController {
     }
 
     @GetMapping("/frecuencia/{frecuencia}")
-    public ResponseEntity<List<MovimientoResponse>> obtenerIngresosPorFrecuencia(@PathVariable String frecuencia) {
+    public ResponseEntity<List<MovimientoResponse>> obtenerIngresosPorFrecuencia(@PathVariable FrecuenciaIngreso frecuencia) {
         return ResponseEntity.ok(ingresoService.obtenerIngresosPorFrecuencia(frecuencia));
     }
 

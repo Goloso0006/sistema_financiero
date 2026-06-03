@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
+import com.sistema.financiero.enums.CategoriaGasto;
 
 @RestController
 @RequestMapping("/api/gastos")
@@ -39,7 +40,7 @@ public class GastoController {
     }
 
     @GetMapping("/tipo/{tipoGasto}")
-    public ResponseEntity<List<MovimientoResponse>> obtenerGastosPorTipo(@PathVariable String tipoGasto) {
+    public ResponseEntity<List<MovimientoResponse>> obtenerGastosPorTipo(@PathVariable CategoriaGasto tipoGasto) {
         return ResponseEntity.ok(gastoService.obtenerGastosPorTipo(tipoGasto));
     }
 

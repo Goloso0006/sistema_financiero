@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface IngresoRepository extends MongoRepository<Ingreso, String> {
     List<Ingreso> findByCuentaId(String cuentaId);
-    List<Ingreso> findByFrecuencia(String frecuencia);
+    List<Ingreso> findByFrecuencia(com.sistema.financiero.enums.FrecuenciaIngreso frecuencia);
 }
 
