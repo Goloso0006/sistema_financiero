@@ -208,3 +208,22 @@ La URL base para todas las peticiones asumiendo que ejecutas el proyecto localme
 ### Actualizar y Eliminar Inversión
 * **PUT** `/api/inversiones/{id}` -> Actualizar (enviar JSON completo).
 * **DELETE** `/api/inversiones/{id}` -> Eliminar.
+
+---
+
+## 6. Reportes (`/api/reportes`)
+
+### Generar Reporte Mensual
+Este endpoint genera un resumen del balance general, total de ingresos, gastos e inversiones para un usuario específico en un mes y año determinados.
+
+* **Método:** `GET`
+* **URL:** `/api/reportes/generar?usuarioId={usuarioId}&mes={mes}&anio={anio}`
+* **Parámetros (Query Params):**
+  * `usuarioId`: ID del usuario
+  * `mes`: Número de mes (ej. `10` para Octubre)
+  * `anio`: Año en cuatro dígitos (ej. `2023`)
+
+**Ejemplo de URL completa:**
+`http://localhost:8080/api/reportes/generar?usuarioId=AQUI_TU_USUARIO_ID&mes=10&anio=2023`
+
+*(Nota: Dado tu `application.properties`, recuerda agregar `/api/v1` al inicio en Postman: `http://localhost:8080/api/v1/api/reportes/generar...`)*
