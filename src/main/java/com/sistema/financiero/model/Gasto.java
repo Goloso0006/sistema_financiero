@@ -1,34 +1,24 @@
 package com.sistema.financiero.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import com.sistema.financiero.enums.CategoriaGasto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.Builder;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Document(collection = "gastos")
-public class Gasto {
-    
-    @MongoId
-    private String id;
-    
-    @NotBlank(message = "El ID de cuenta no puede estar vacío")
-    private String cuentaId;
-    
-    @NotNull(message = "El monto no puede ser nulo")
-    @Positive(message = "El monto debe ser mayor a cero")
-    private double monto;
+public class Gasto extends MovimientoFinanciero {
     
     @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
@@ -36,13 +26,15 @@ public class Gasto {
     @NotNull(message = "La categoría no puede ser nula")
     private CategoriaGasto tipoGasto;
     
+    @Builder.Default
     private boolean esFijo = false;
+    
+    @Builder.Default
     private boolean recordatorio = false;
     
-    private LocalDate fecha = LocalDate.now();
+    @Builder.Default
     private LocalDateTime fechaCreacion = LocalDateTime.now();
+    
+    @Builder.Default
     private LocalDateTime fechaActualizacion = LocalDateTime.now();
 }
-
-
-
