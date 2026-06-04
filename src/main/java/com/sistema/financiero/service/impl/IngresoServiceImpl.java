@@ -2,7 +2,9 @@ package com.sistema.financiero.service.impl;
 
 import com.sistema.financiero.dto.request.IngresoRequest;
 import com.sistema.financiero.dto.response.MovimientoResponse;
+import com.sistema.financiero.model.Cuenta;
 import com.sistema.financiero.model.Ingreso;
+import com.sistema.financiero.repository.CuentaRepository;
 import com.sistema.financiero.repository.IngresoRepository;
 import com.sistema.financiero.service.IngresoService;
 import lombok.AllArgsConstructor;
@@ -18,9 +20,13 @@ import java.util.stream.Collectors;
 public class IngresoServiceImpl implements IngresoService {
 
     private final IngresoRepository ingresoRepository;
+    private final CuentaRepository cuentaRepository;
 
     @Override
     public MovimientoResponse crearIngreso(IngresoRequest request) {
+        Cuenta cuenta = cuentaRepository.findById(request.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
         Ingreso ingreso = Ingreso.builder()
                 .cuentaId(request.getCuentaId())
                 .monto(request.getMonto())
@@ -31,6 +37,10 @@ public class IngresoServiceImpl implements IngresoService {
                 .fechaActualizacion(LocalDateTime.now())
                 .build();
         Ingreso ingresoGuardado = ingresoRepository.save(ingreso);
+
+        cuenta.setSaldo(cuenta.getSaldo() + request.getMonto());
+        cuentaRepository.save(cuenta);
+
         return mapearAResponse(ingresoGuardado);
     }
 
@@ -66,6 +76,14 @@ public class IngresoServiceImpl implements IngresoService {
     public MovimientoResponse actualizarIngreso(String id, IngresoRequest request) {
         Ingreso ingreso = ingresoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Ingreso no encontrado"));
+
+        Cuenta cuenta = cuentaRepository.findById(ingreso.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        double diferencia = request.getMonto() - ingreso.getMonto();
+        cuenta.setSaldo(cuenta.getSaldo() + diferencia);
+        cuentaRepository.save(cuenta);
+
         ingreso.setMonto(request.getMonto());
         ingreso.setDescripcion(request.getDescripcion());
         ingreso.setFrecuencia(request.getFrecuencia());
@@ -77,6 +95,14 @@ public class IngresoServiceImpl implements IngresoService {
 
     @Override
     public void eliminarIngreso(String id) {
+        Ingreso ingreso = ingresoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ingreso no encontrado"));
+        Cuenta cuenta = cuentaRepository.findById(ingreso.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        cuenta.setSaldo(cuenta.getSaldo() - ingreso.getMonto());
+        cuentaRepository.save(cuenta);
+
         ingresoRepository.deleteById(id);
     }
 

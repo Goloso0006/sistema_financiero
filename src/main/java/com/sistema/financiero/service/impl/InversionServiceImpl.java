@@ -2,7 +2,9 @@ package com.sistema.financiero.service.impl;
 
 import com.sistema.financiero.dto.request.InversionRequest;
 import com.sistema.financiero.dto.response.MovimientoResponse;
+import com.sistema.financiero.model.Cuenta;
 import com.sistema.financiero.model.Inversion;
+import com.sistema.financiero.repository.CuentaRepository;
 import com.sistema.financiero.repository.InversionRepository;
 import com.sistema.financiero.service.InversionService;
 import lombok.AllArgsConstructor;
@@ -18,9 +20,13 @@ import java.util.stream.Collectors;
 public class InversionServiceImpl implements InversionService {
 
     private final InversionRepository inversionRepository;
+    private final CuentaRepository cuentaRepository;
 
     @Override
     public MovimientoResponse crearInversion(InversionRequest request) {
+        Cuenta cuenta = cuentaRepository.findById(request.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
         Inversion inversion = Inversion.builder()
                 .cuentaId(request.getCuentaId())
                 .monto(request.getMonto())
@@ -34,6 +40,10 @@ public class InversionServiceImpl implements InversionService {
                 .fechaActualizacion(LocalDateTime.now())
                 .build();
         Inversion inversionGuardada = inversionRepository.save(inversion);
+
+        cuenta.setSaldo(cuenta.getSaldo() - request.getMonto());
+        cuentaRepository.save(cuenta);
+
         return mapearAResponse(inversionGuardada);
     }
 
@@ -76,6 +86,14 @@ public class InversionServiceImpl implements InversionService {
     public MovimientoResponse actualizarInversion(String id, InversionRequest request) {
         Inversion inversion = inversionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inversión no encontrada"));
+
+        Cuenta cuenta = cuentaRepository.findById(inversion.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        double diferencia = request.getMonto() - inversion.getMonto();
+        cuenta.setSaldo(cuenta.getSaldo() - diferencia);
+        cuentaRepository.save(cuenta);
+
         inversion.setMonto(request.getMonto());
         inversion.setDescripcion(request.getDescripcion());
         inversion.setTipoInversion(request.getTipoInversion());
@@ -89,6 +107,14 @@ public class InversionServiceImpl implements InversionService {
 
     @Override
     public void eliminarInversion(String id) {
+        Inversion inversion = inversionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Inversión no encontrada"));
+        Cuenta cuenta = cuentaRepository.findById(inversion.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        cuenta.setSaldo(cuenta.getSaldo() + inversion.getMonto());
+        cuentaRepository.save(cuenta);
+
         inversionRepository.deleteById(id);
     }
 

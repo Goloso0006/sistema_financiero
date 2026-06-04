@@ -2,7 +2,9 @@ package com.sistema.financiero.service.impl;
 
 import com.sistema.financiero.dto.request.GastoRequest;
 import com.sistema.financiero.dto.response.MovimientoResponse;
+import com.sistema.financiero.model.Cuenta;
 import com.sistema.financiero.model.Gasto;
+import com.sistema.financiero.repository.CuentaRepository;
 import com.sistema.financiero.repository.GastoRepository;
 import com.sistema.financiero.service.GastoService;
 import lombok.AllArgsConstructor;
@@ -18,9 +20,13 @@ import java.util.stream.Collectors;
 public class GastoServiceImpl implements GastoService {
 
     private final GastoRepository gastoRepository;
+    private final CuentaRepository cuentaRepository;
 
     @Override
     public MovimientoResponse crearGasto(GastoRequest request) {
+        Cuenta cuenta = cuentaRepository.findById(request.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
         Gasto gasto = Gasto.builder()
                 .cuentaId(request.getCuentaId())
                 .monto(request.getMonto())
@@ -33,6 +39,10 @@ public class GastoServiceImpl implements GastoService {
                 .fechaActualizacion(LocalDateTime.now())
                 .build();
         Gasto gastoGuardado = gastoRepository.save(gasto);
+
+        cuenta.setSaldo(cuenta.getSaldo() - request.getMonto());
+        cuentaRepository.save(cuenta);
+
         return mapearAResponse(gastoGuardado);
     }
 
@@ -75,6 +85,14 @@ public class GastoServiceImpl implements GastoService {
     public MovimientoResponse actualizarGasto(String id, GastoRequest request) {
         Gasto gasto = gastoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gasto no encontrado"));
+
+        Cuenta cuenta = cuentaRepository.findById(gasto.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        double diferencia = request.getMonto() - gasto.getMonto();
+        cuenta.setSaldo(cuenta.getSaldo() - diferencia);
+        cuentaRepository.save(cuenta);
+
         gasto.setMonto(request.getMonto());
         gasto.setDescripcion(request.getDescripcion());
         gasto.setTipoGasto(request.getTipoGasto());
@@ -88,6 +106,14 @@ public class GastoServiceImpl implements GastoService {
 
     @Override
     public void eliminarGasto(String id) {
+        Gasto gasto = gastoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Gasto no encontrado"));
+        Cuenta cuenta = cuentaRepository.findById(gasto.getCuentaId())
+                .orElseThrow(() -> new RuntimeException("Cuenta no encontrada"));
+
+        cuenta.setSaldo(cuenta.getSaldo() + gasto.getMonto());
+        cuentaRepository.save(cuenta);
+
         gastoRepository.deleteById(id);
     }
 
